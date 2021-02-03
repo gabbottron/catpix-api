@@ -1,0 +1,47 @@
+version: '3.5'
+
+services:
+  db:
+    image: postgres:12.4
+    volumes:
+      - ./scripts/db:/docker-entrypoint-initdb.d
+    container_name: catpix-db
+    restart: always
+    networks:
+      - catpix_net
+    ports:
+      - 5439:5432
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+  api:
+    container_name: catpix-api
+    restart: always
+    depends_on:
+      - "db"
+    build:
+      args:
+        PROJECT_NAME: catpix
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - catpix_net
+    ports:
+      - '8080:8080'
+    external_links:
+      - catpix-db
+    environment:
+      - APP_ENV=development
+      - APP_ENDPOINT
+      - POSTGRES_DB_USER
+      - POSTGRES_DB_PASSWORD
+      - DB_NAME
+      - DB_HOSTNAME=catpix-db
+      - DB_PORT
+      - PORT
+    command: ./catpix-api
+
+networks:
+  catpix_net:
+    name: catpix_net
