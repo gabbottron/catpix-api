@@ -164,6 +164,9 @@ func InitRouter() *gin.Engine {
 	// Build the router
 	r := gin.Default()
 
+	// Serve static files (pictures)
+	r.Static("/catpix", "./pictures")
+
 	// Set cross-origin support
 	r = SetCrossOrigin(r)
 
