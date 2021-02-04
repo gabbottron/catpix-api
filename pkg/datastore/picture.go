@@ -10,7 +10,10 @@ const (
 	InsertPictureQuery string = `INSERT INTO picture 
 		(catpixuserid, filename) 
 		VALUES($1, $2)
-		RETURNING pictureid, catpixuserid, filename, createdate, modifieddate`
+    RETURNING pictureid, catpixuserid, filename, createdate, modifieddate`
+
+	DeletePictureQuery string = `DELETE FROM picture 
+    WHERE pictureid = $1 AND catpixuserid = $2 RETURNING filename`
 )
 
 func InsertPictureRecord(obj *datatypes.PictureJSON) error {
@@ -32,4 +35,15 @@ func InsertPictureRecord(obj *datatypes.PictureJSON) error {
 	}
 
 	return nil
+}
+
+func DeletePictureRecord(pictureID int, userID int) (error, string) {
+	var filename string
+
+	err := db.QueryRow(DeletePictureQuery, pictureID, userID).Scan(&filename)
+	if err != nil {
+		return &DatastoreError{ErrorUnknownDatabaseErrorString, ErrorUnknownDatabaseError}, ""
+	}
+
+	return nil, filename
 }

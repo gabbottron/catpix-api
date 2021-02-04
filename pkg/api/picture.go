@@ -3,6 +3,7 @@ package api
 import (
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 
 	"github.com/gabbottron/catpix-api/pkg/datastore"
@@ -13,8 +14,9 @@ import (
 )
 
 const (
-	PictureRoute  string = "/picture"
-	PicturesRoute string = "/pictures"
+	PictureRoute         string = "/picture"
+	PicturesRoute        string = "/pictures"
+	PictureExistingRoute string = "/picture/:pictureid"
 )
 
 func HandlePictureCreateRequest(c *gin.Context) {
@@ -64,6 +66,40 @@ func HandlePictureCreateRequest(c *gin.Context) {
 	return
 }
 
+func HandlePictureDeleteRequest(c *gin.Context) {
+	// Get the userID from the claims
+	claim_userid := GetIDFromClaim(c)
+
+	// Validate pictureID param in URI
+	param_pictureid, err := GetIntFromParam(c, "pictureid")
+	if err != nil {
+		log.Println("HandlePictureDeleteRequest -> Invalid pictureID supplied as URI parameter!")
+		ReplyBadRequest(c, "Malformed pictureID in URI!")
+		return
+	}
+
+	// attempt to delete the record from the database
+	err, filename := datastore.DeletePictureRecord(param_pictureid, claim_userid)
+	if err != nil {
+		log.Printf("HandlePictureDeleteRequest -> Unable to delete picture with id (%d) for user (%d)", param_pictureid, claim_userid)
+		ReplyNotFound(c, "A picture with that ID doesn't exist, or you do not own it!")
+		return
+	}
+
+	// if we made it here, record deletion was successful,
+	// now remove the file from disk
+	err = os.Remove("/app/pictures/" + filename)
+	if err != nil {
+		log.Println("HandlePictureDeleteRequest -> Failed to remove picture file from disk!")
+		// I'm not returning an error to the user at this point, because the record
+		// was removed from the database, so this error is irrelevant to the end user
+	}
+
+	c.JSON(http.StatusOK, "Picture was deleted!")
+
+	return
+}
+
 func AddPictureRoutes(r *gin.Engine, authMiddleware *jwt.GinJWTMiddleware) *gin.Engine {
 	// Add protected routes
 	auth := r.Group("/auth")
@@ -71,6 +107,7 @@ func AddPictureRoutes(r *gin.Engine, authMiddleware *jwt.GinJWTMiddleware) *gin.
 	{
 		// picture
 		auth.POST(PictureRoute, HandlePictureCreateRequest)
+		auth.DELETE(PictureExistingRoute, HandlePictureDeleteRequest)
 	}
 
 	return r

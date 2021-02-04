@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/gabbottron/catpix-api/pkg/datatypes"
@@ -69,6 +70,12 @@ func ValidatePassword(plain_password string) bool {
 	}
 
 	return false
+}
+
+// Read the provided param value and attempt to convert it to an integer
+func GetIntFromParam(c *gin.Context, param string) (int, error) {
+	param_as_int, err := strconv.Atoi(c.Param(param))
+	return param_as_int, err
 }
 
 // Get the user ID from the claim in the JWT
