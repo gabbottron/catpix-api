@@ -13,3 +13,4 @@ RUN apk --no-cache add ca-certificates
 RUN apk --no-cache add postgresql-client
 WORKDIR /app/
 COPY --from=build-stage /wrk/catpix-api/bin/catpix-api .
+RUN mkdir pictures
