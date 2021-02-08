@@ -1,0 +1,13 @@
+APP_ENV=local-development
+APP_ENDPOINT=http://localhost:3000
+
+PORT=8080
+
+POSTGRES_DB_USER=catpix
+POSTGRES_DB_PASSWORD=mypass
+
+POSTGRES_PASSWORD=omgwtfbbq
+
+DB_NAME=catpix
+DB_PORT=5432
+DB_HOSTNAME=catpix-db
