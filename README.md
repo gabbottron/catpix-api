@@ -17,7 +17,7 @@ docker-compose down : Bring down the API and dependencies
 
 **DEFAULT URI:** http://localhost:8080
 
-**POSTMAN COLLECTION:** https://www.getpostman.com/collections/fa46ec11f62bb24ad333
+**POSTMAN COLLECTION:** https://www.getpostman.com/collections/fa46ec11f62bb24ad333  
 The above link will load all of the requests and macros for authentication into Postman for you.
 
 ## Open Endpoints
@@ -37,5 +37,4 @@ request. A Token can be acquired from the Login view above.
 * [Create Picture](doc/new_picture.md)    : `POST  /auth/picture`
 * [Update Picture](doc/update_picture.md) : `PUT  /auth/picture/:picture_id`
 * [Delete Picture](doc/delete_picture.md) : `DELETE  /auth/picture/:picture_id`
-* [New User](doc/new_user.md)             : `POST /user`
 
