@@ -139,6 +139,7 @@ func GetRequestAuthed(method string, route string, body string, token string) *h
 	return request
 }
 
+// This function will run once before any tests are run
 func init() {
-	fmt.Println("INIT IS RUNNING --------------------------------------")
+	// TODO: Run migrations on the test database
 }
