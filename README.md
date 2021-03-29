@@ -1,5 +1,7 @@
 # catpix-api
 A forked challenge project to implement a cat pictures API
+A challenge project to implement a cat pictures API
+A note.
 
 ## Local dev setup
 #### Dependencies
